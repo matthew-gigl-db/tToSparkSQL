@@ -27,3 +27,14 @@ resources:
             autoscale:
                 min_workers: 1
                 max_workers: 4
+
+      queue:
+        enabled: true
+
+      parameters:
+        - name: bundle.workspace.file_path
+          default: /Workspace${workspace.file_path}
+        - name: bundle.target
+          default: ${bundle.target}
+        - name: bundle.catalog
+          default: mgiglia

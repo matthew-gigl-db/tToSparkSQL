@@ -28,3 +28,8 @@ targets:
         level: CAN_MANAGE
     run_as:
       user_name: matthew.giglia@databricks.com
+
+variables:
+  warehouse_id:
+    description: A Databricks SQL Warehouse ID to Use for SQL Notebooks or Files 
+    default: 475b94ddc7cd5211
