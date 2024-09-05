@@ -15,9 +15,9 @@ resources:
 
       tasks:
         - task_key: notebook_task
-          job_cluster_key: job_cluster
+          # job_cluster_key: job_cluster # note that commenting out the job_cluster_key defaults to serverless 
           notebook_task:
-            notebook_path: ../src/notebook.py
+            notebook_path: ../src/install-adventure-works.py
         
       job_clusters:
         - job_cluster_key: job_cluster
