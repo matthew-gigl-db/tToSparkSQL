@@ -16,6 +16,9 @@ targets:
     default: true
     workspace:
       host: https://e2-demo-field-eng.cloud.databricks.com
+    variables:  
+      warehouse_id: 475b94ddc7cd5211
+      catalog: mgiglia
 
   prod:
     mode: production
@@ -28,8 +31,15 @@ targets:
         level: CAN_MANAGE
     run_as:
       user_name: matthew.giglia@databricks.com
+    bundle: # Required.
+      git:
+        origin_url: https://github.com/matthew-gigl-db/tToSparkSQL.git
+        branch: publish
 
 variables:
   warehouse_id:
     description: A Databricks SQL Warehouse ID to Use for SQL Notebooks or Files 
     default: 475b94ddc7cd5211
+  catalog:
+    description: Unity Catalog catalog used to create the schemas that will house the tables and volumes used for the demo.  
+    default: main

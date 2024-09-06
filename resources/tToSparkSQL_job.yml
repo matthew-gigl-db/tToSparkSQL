@@ -37,4 +37,4 @@ resources:
         - name: bundle.target
           default: ${bundle.target}
         - name: bundle.catalog
-          default: mgiglia
+          default: ${var.catalog}
