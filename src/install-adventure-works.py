@@ -109,7 +109,7 @@ w = WorkspaceClient()
 # COMMAND ----------
 
 # DBTITLE 1,Retrieve File Details from the adeventure-works fixtures sub-directory
-adventure_files = w.workspace.list(f"{fixtures_path}/adventure-works")
+adventure_files = w.workspace.list(f"{fixtures_path}/adventure-works-dw")
 adventure_files = [file.as_dict() for file in adventure_files]
 
 # COMMAND ----------
