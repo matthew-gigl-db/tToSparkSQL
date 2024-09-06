@@ -156,5 +156,35 @@ display(adventure_files)
 
 # COMMAND ----------
 
+spark.sql(f"use catalog {catalog_use}")
+spark.sql(f"use schema adventure")
+display(
+  spark.sql("select current_catalog(), current_schema()")
+)
+
+# COMMAND ----------
+
 for file in adventure_files:
-  print(file["path"])
+  file_name = file.path.split("/")[-1]
+  table_name = file_name.lower().split(".")[0]
+  statement = f"""
+    CREATE OR REPLACE TABLE {table_name} AS
+    SELECT 
+      * 
+      ,_metadata as metadata
+    FROM
+    read_files(
+        '{file.path}'
+        ,format => 'csv'
+        ,header => 'true'
+        ,inferSchema => 'true'
+        ,delimiter => '\\t'
+        ,columnNameOfCorruptRecord => '_corrupt_record'
+        ,quote => '"'
+        ,escape => '"'
+        ,multiLine => 'true'
+        ,ignoreLeadingWhiteSpace => 'true'
+        ,ignoreTrailingWhiteSpace => 'true'
+      )
+  """
+  spark.sql(statement)
