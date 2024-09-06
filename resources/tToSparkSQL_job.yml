@@ -18,6 +18,13 @@ resources:
           # job_cluster_key: job_cluster # note that commenting out the job_cluster_key defaults to serverless 
           notebook_task:
             notebook_path: ../src/install-adventure-works.py
+        - task_key: run_sqlnotebook
+          depends_on:
+            - task_key: notebook_task
+          notebook_task:
+            notebook_path: /Workspace/Users/matthew.giglia@databricks.com/encryptedCLM/src/register_sql_udfs
+            source: WORKSPACE
+            warehouse_id: 475b94ddc7cd5211
         
       # job_clusters:
       #   - job_cluster_key: job_cluster
