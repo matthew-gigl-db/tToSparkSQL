@@ -138,10 +138,23 @@ for file_path in file_paths:
 # COMMAND ----------
 
 # DBTITLE 1,Show Files in Volume
-display(dbutils.fs.ls(f"{volume_path}/data"))
+adventure_files = dbutils.fs.ls(f"{volume_path}/data")
+display(adventure_files)
 
 # COMMAND ----------
 
+# DBTITLE 1,Commented Out:  Drop Volume - Development Only
 # MAGIC %sql
 # MAGIC
 # MAGIC -- EXECUTE IMMEDIATE "drop volume if exists IDENTIFIER(new_catalog || '.adventure' || '.landing')"
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### Create Tables
+# MAGIC ***
+
+# COMMAND ----------
+
+for file in adventure_files:
+  print(file["path"])
