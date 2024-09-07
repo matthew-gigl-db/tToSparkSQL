@@ -5,9 +5,9 @@
 # MAGIC
 # MAGIC ***
 # MAGIC
-# MAGIC The purpose of this notebook is to create the catalog, schema and tables that we'll use as a proxy to a replicated SQL Server Database that T-SQL reports were written against.  The SQL Server Database used is the famous "Adventure Works" that is still used today for training and certification exams for SQL Server and PowerBI.  
+# MAGIC The purpose of this notebook is to create the catalog, schema and volumes that we'll use as a proxy to a replicated SQL Server Database that T-SQL reports were written against.  The SQL Server Database used is the famous "Adventure Works" that is still used today for training and certification exams for SQL Server and PowerBI.  
 # MAGIC
-# MAGIC The files used as the 2022 version of the Adventure Works database, downloaded from [Kaggle](https://www.kaggle.com/datasets/algorismus/adventure-works-in-excel-tables).  
+# MAGIC The files used are the 2022 version of the Adventure Works database, retrieved from the official Microsoft SQL Server Samples [GitHub](https://github.com/microsoft/sql-server-samples) on September 5, 2024.  
 # MAGIC
 
 # COMMAND ----------
