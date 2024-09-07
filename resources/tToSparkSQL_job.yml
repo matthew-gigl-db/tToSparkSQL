@@ -38,3 +38,12 @@ resources:
           default: ${bundle.target}
         - name: bundle.catalog
           default: ${var.catalog}
+
+
+
+
+
+
+
+
+
