@@ -108,8 +108,8 @@ w = WorkspaceClient()
 
 # COMMAND ----------
 
-# DBTITLE 1,Retrieve File Details from the adeventure-works fixtures sub-directory
-adventure_files = w.workspace.list(f"{fixtures_path}/adventure-works-dw")
+# DBTITLE 1,Retrieve File Details from the fixtures Workspace Directory
+adventure_files = w.workspace.list(f"{fixtures_path}", recursive=True)
 adventure_files = [file.as_dict() for file in adventure_files]
 
 # COMMAND ----------
@@ -119,31 +119,63 @@ display(adventure_files)
 
 # COMMAND ----------
 
-# DBTITLE 1,List the file paths
-file_paths = [file["path"] for file in adventure_files]
+# DBTITLE 1,List the file paths Adventure Works OLTP and DW Data Files
+file_paths = [file["path"] for file in adventure_files if file["object_type"] == "FILE" and ".git" not in file["path"]]
 file_paths
+
+# COMMAND ----------
+
+# DBTITLE 1,Create Volume Sub Directories for Data Files and t-SQL Files
+new_dirs = [f"{volume_path}/data/dw", f"{volume_path}/data/oltp", f"{volume_path}/t-sql/installs", f"{volume_path}/t-sql/reports"]
+
+for dir in new_dirs:
+  dbutils.fs.mkdirs(dir)
+
+display(
+  dbutils.fs.ls(f"{volume_path}/data") + dbutils.fs.ls(f"{volume_path}/t-sql")
+)
 
 # COMMAND ----------
 
 # DBTITLE 1,Copy files from the Workspace to the Volume
 import shutil
 
-dbutils.fs.mkdirs(f"{volume_path}/data")
-
 for file_path in file_paths:
     file_name = file_path.split("/")[-1]
-    destination_path = f"{volume_path}/data/{file_name}"
+    if "adventure-works-oltp" in file_path:
+        destination_path = f"{volume_path}/data/oltp/{file_name}"
+    elif "adventure-works-dw" in file_path:
+        destination_path = f"{volume_path}/data/dw/{file_name}"
+    elif "t-sql/installs" in file_path:
+        destination_path = f"{volume_path}/t-sql/installs/{file_name}"
+    elif "t-sql/reports" in file_path:
+        destination_path = f"{volume_path}/t-sql/reports/{file_name}"
+    else:
+        destination_path = f"{volume_path}/data/{file_name}"
     shutil.copy(file_path, destination_path)
 
 # COMMAND ----------
 
 # DBTITLE 1,Show Files in Volume
-adventure_files = dbutils.fs.ls(f"{volume_path}/data")
-display(adventure_files)
+display(
+  dbutils.fs.ls(f"{volume_path}/data") +
+  dbutils.fs.ls(f"{volume_path}/data/dw") + 
+  dbutils.fs.ls(f"{volume_path}/data/oltp") + 
+  dbutils.fs.ls(f"{volume_path}/t-sql") +
+  dbutils.fs.ls(f"{volume_path}/t-sql/installs") +
+  dbutils.fs.ls(f"{volume_path}/t-sql/reports")
+)
 
 # COMMAND ----------
 
-# DBTITLE 1,Commented Out:  Drop Volume - Development Only
+# MAGIC %md
+# MAGIC *** 
+# MAGIC
+# MAGIC ### Not Run:
+
+# COMMAND ----------
+
+# DBTITLE 1,Drop Volume - Development Only
 # MAGIC %sql
 # MAGIC
 # MAGIC -- EXECUTE IMMEDIATE "drop volume if exists IDENTIFIER(new_catalog || '.adventure' || '.landing')"
@@ -151,40 +183,4 @@ display(adventure_files)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### Create Tables
 # MAGIC ***
-
-# COMMAND ----------
-
-spark.sql(f"use catalog {catalog_use}")
-spark.sql(f"use schema adventure")
-display(
-  spark.sql("select current_catalog(), current_schema()")
-)
-
-# COMMAND ----------
-
-# for file in adventure_files:
-#   file_name = file.path.split("/")[-1]
-#   table_name = file_name.lower().split(".")[0]
-#   statement = f"""
-#     CREATE OR REPLACE TABLE {table_name} AS
-#     SELECT 
-#       * 
-#       ,_metadata as metadata
-#     FROM
-#     read_files(
-#         '{file.path}'
-#         ,format => 'csv'
-#         ,header => 'true'
-#         ,inferSchema => 'true'
-#         ,delimiter => '\\t'
-#         ,columnNameOfCorruptRecord => '_corrupt_record'
-#         ,quote => '"'
-#         ,escape => '"'
-#         ,multiLine => 'true'
-#         ,ignoreLeadingWhiteSpace => 'true'
-#         ,ignoreTrailingWhiteSpace => 'true'
-#       )
-#   """
-#   spark.sql(statement)
