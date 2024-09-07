@@ -20,6 +20,8 @@ targets:
       warehouse_id: 475b94ddc7cd5211
       catalog: mgiglia
 
+      
+
   prod:
     mode: production
     workspace:
@@ -43,3 +45,14 @@ variables:
   catalog:
     description: Unity Catalog catalog used to create the schemas that will house the tables and volumes used for the demo.  
     default: main
+
+
+
+
+
+
+
+
+
+
+
