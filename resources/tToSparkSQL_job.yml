@@ -17,7 +17,7 @@ resources:
         - task_key: notebook_task
           job_cluster_key: job_cluster # use classic to create catalog/schemas
           notebook_task:
-            notebook_path: ../src/install-adventure-works.py
+            notebook_path: ../src/00-install-adventure-works.py
         
       job_clusters:
         - job_cluster_key: job_cluster
