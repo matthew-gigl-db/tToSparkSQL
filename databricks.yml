@@ -40,7 +40,7 @@ targets:
 
 variables:
   run_as_principal:
-    description: The user_name of the principal that the workflow should be run as in higher environments.   
+    description: The user_name of the principal that the workflow should be run as in higher environments, default to the developer's user_name.   
     default: matthew.giglia@databricks.com
   can_manage_principal:
     description: The user_name of the principal or group with CAN_MANAGE permissions for the workflow.  
