@@ -26,13 +26,12 @@ targets:
     mode: production
     workspace:
       host: https://e2-demo-field-eng.cloud.databricks.com
-      # We explicitly specify /Users/matthew.giglia@databricks.com to make sure we only have a single copy.
-      root_path: /Users/matthew.giglia@databricks.com/.bundle/${bundle.name}/${bundle.target}
+      root_path: /Users/${var.run_as_principal}/.bundle/${bundle.name}/${bundle.target}
     permissions:
-      - user_name: matthew.giglia@databricks.com
+      - user_name: ${var.can_manage_principal}
         level: CAN_MANAGE
     run_as:
-      user_name: matthew.giglia@databricks.com
+      user_name: ${var.run_as_principal}
     bundle: # Required.
       git:
         origin_url: https://github.com/matthew-gigl-db/tToSparkSQL.git
@@ -40,6 +39,12 @@ targets:
 
 
 variables:
+  run_as_principal:
+    description: The user_name of the principal that the workflow should be run as in higher environments.   
+    default: matthew.giglia@databricks.com
+  can_manage_principal:
+    description: The user_name of the principal or group with CAN_MANAGE permissions for the workflow.  
+    default: matthew.giglia@databricks.com
   warehouse_id:
     description: A Databricks SQL Warehouse ID to Use for SQL Notebooks or Files 
     default: 475b94ddc7cd5211
