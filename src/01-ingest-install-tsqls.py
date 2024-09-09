@@ -8,4 +8,91 @@
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ## Notebook Setup 
+# MAGIC ***
 
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### Upgrade the Databricks Python SDK
+
+# COMMAND ----------
+
+# MAGIC %pip install databricks-sdk --upgrade
+
+# COMMAND ----------
+
+dbutils.library.restartPython()
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### Set Notebook Parameters
+
+# COMMAND ----------
+
+dbutils.widgets.text("bundle.workspace.file_path", "..")
+dbutils.widgets.text("bundle.catalog", "main")
+
+# COMMAND ----------
+
+workspace_file_path = dbutils.widgets.get("bundle.workspace.file_path")
+catalog_use = dbutils.widgets.get("bundle.catalog")
+
+# COMMAND ----------
+
+import os
+
+src_path = os.path.abspath(f"{workspace_file_path}/src")
+fixtures_path = os.path.abspath(f"{workspace_file_path}/fixtures")
+
+print(f"""
+  src_path = {src_path}
+  fixtures_path = {fixtures_path}
+""")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Ingest the SQL Files as Variant 
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC
+# MAGIC DECLARE OR REPLACE VARIABLE catalog_use STRING;
+# MAGIC SET VAR catalog_use = :`bundle.catalog`;
+# MAGIC SELECT catalog_use; 
+
+# COMMAND ----------
+
+# MAGIC %sql 
+# MAGIC
+# MAGIC DECLARE OR REPLACE VARIABLE sql_stmnt STRING;
+# MAGIC SET VAR sql_stmnt = "
+# MAGIC   CREATE OR REPLACE TABLE IDENTIFIER(catalog_use || '.adventure.installs') AS 
+# MAGIC   SELECT
+# MAGIC      _metadata.file_modification_time as file_modification_time
+# MAGIC     ,_metadata.file_block_length as file_block_length
+# MAGIC     ,_metadata.file_name as file_name
+# MAGIC     ,_metadata.file_size as file_size
+# MAGIC     ,_metadata.file_block_start as file_block_start
+# MAGIC     ,_metadata.file_path as file_path
+# MAGIC     ,_metadata as metadata
+# MAGIC     ,CAST(value AS VARIANT) as value
+# MAGIC   FROM 
+# MAGIC     read_files(
+# MAGIC       '/Volumes/' || catalog_use || '/adventure/landing/t-sql/installs/'
+# MAGIC       ,format => 'text'
+# MAGIC       ,wholeText => 'true'
+# MAGIC     )
+# MAGIC ";
+# MAGIC
+# MAGIC EXECUTE IMMEDIATE sql_stmnt;
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC
+# MAGIC SHOW CREATE TABLE IDENTIFIER(catalog_use || '.adventure.installs');
