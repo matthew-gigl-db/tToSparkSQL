@@ -21,6 +21,10 @@
 
 # COMMAND ----------
 
+dbutils.widgets.text("bundle.catalog", "main")
+
+# COMMAND ----------
+
 # MAGIC %sql
 # MAGIC
 # MAGIC DECLARE OR REPLACE VARIABLE catalog_use STRING;
@@ -48,7 +52,7 @@
 # MAGIC     ,_metadata.file_block_start as file_block_start
 # MAGIC     ,_metadata.file_path as file_path
 # MAGIC     ,_metadata as metadata
-# MAGIC     ,* as value
+# MAGIC     ,*
 # MAGIC   FROM 
 # MAGIC     read_files(
 # MAGIC       '/Volumes/' || catalog_use || '/adventure/landing/t-sql/installs/'
