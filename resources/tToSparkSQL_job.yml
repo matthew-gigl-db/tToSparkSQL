@@ -14,10 +14,16 @@ resources:
           - matthew.giglia@databricks.com
 
       tasks:
-        - task_key: notebook_task
+        - task_key: install_adventure_works
           job_cluster_key: job_cluster # use classic to create catalog/schemas
           notebook_task:
             notebook_path: ../src/00-install-adventure-works.py
+        - task_key: ingest_install_tsqls
+          depends_on:
+            - task_key: install_adventure_works
+          job_cluster_key: job_cluster # temporarily use classic 15.4 for variant type
+          notebook_task:
+            notebook_path: ../src/01-ingest-install-tsqls.py
         
       job_clusters:
         - job_cluster_key: job_cluster
