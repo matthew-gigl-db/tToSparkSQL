@@ -4,6 +4,8 @@
 # MAGIC
 # MAGIC The purpose of this notebook is to ingest the OLTP and DW T-SQL install files from the project's *fixtures* folder as data files that we can parse and send to an LLM later for conversion to Spark SQL.  
 # MAGIC
+# MAGIC Note: once DBSQL Warehouses are upgraded to 15.4 LTS or above, this notebook may be run against a Serverless SQL endpoint.
+# MAGIC
 # MAGIC ***
 
 # COMMAND ----------
@@ -15,47 +17,7 @@
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### Upgrade the Databricks Python SDK
-
-# COMMAND ----------
-
-# MAGIC %pip install databricks-sdk --upgrade
-
-# COMMAND ----------
-
-dbutils.library.restartPython()
-
-# COMMAND ----------
-
-# MAGIC %md
 # MAGIC ### Set Notebook Parameters
-
-# COMMAND ----------
-
-dbutils.widgets.text("bundle.workspace.file_path", "..")
-dbutils.widgets.text("bundle.catalog", "main")
-
-# COMMAND ----------
-
-workspace_file_path = dbutils.widgets.get("bundle.workspace.file_path")
-catalog_use = dbutils.widgets.get("bundle.catalog")
-
-# COMMAND ----------
-
-import os
-
-src_path = os.path.abspath(f"{workspace_file_path}/src")
-fixtures_path = os.path.abspath(f"{workspace_file_path}/fixtures")
-
-print(f"""
-  src_path = {src_path}
-  fixtures_path = {fixtures_path}
-""")
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Ingest the SQL Files as Variant 
 
 # COMMAND ----------
 
@@ -64,6 +26,12 @@ print(f"""
 # MAGIC DECLARE OR REPLACE VARIABLE catalog_use STRING;
 # MAGIC SET VAR catalog_use = :`bundle.catalog`;
 # MAGIC SELECT catalog_use; 
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Ingest the SQL Files as Variant 
+# MAGIC ***
 
 # COMMAND ----------
 
@@ -96,3 +64,8 @@ print(f"""
 # MAGIC %sql
 # MAGIC
 # MAGIC SHOW CREATE TABLE IDENTIFIER(catalog_use || '.adventure.installs');
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ***
